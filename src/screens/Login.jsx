@@ -20,14 +20,13 @@ const Login = () => {
 
     try {
       const res = await axios.post("http://localhost:5000/api/auth/login", formData, {
-        withCredentials: true, // to accept cookies (for JWT)
+        withCredentials: true,
       });
-      console.log(res);
 
       if (res.status === 200) {
         alert(`Welcome back, ${res.data.fullName}!`);
         console.log("User Data:", res.data);
-        // redirect or store user info
+        // Redirect or store user info
       }
     } catch (err) {
       const message = err.response?.data?.error || "Login failed. Please try again.";
@@ -36,24 +35,24 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f4f7fb] flex items-center justify-center px-4">
-      <div className="max-w-md w-full bg-white shadow-xl rounded-xl p-10 border-t-[6px] border-[#0056b3]">
-        <h2 className="text-3xl font-bold text-[#003366] text-center mb-2">
-          Login to Your Account
+    <div className="min-h-screen bg-[#f4f4f4] flex items-center justify-center px-4 py-8">
+      <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-10 border-t-[6px] border-[#FF7F32]">
+        <h2 className="text-3xl font-extrabold text-[#2C2C2C] text-center mb-2">
+          Welcome Back
         </h2>
         <p className="text-center text-gray-600 mb-6 text-sm">
-          Report and track public issues in your local community.
+          Sign in to continue reporting and solving local issues.
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="email"
             name="email"
-            placeholder="Email Address"
+            placeholder="Email address"
             required
             value={formData.email}
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-[#0072ce] outline-none"
+            className="w-full border border-gray-300 rounded-full px-5 py-3 focus:ring-2 focus:ring-[#FF7F32] outline-none text-sm"
           />
 
           <input
@@ -63,26 +62,26 @@ const Login = () => {
             required
             value={formData.password}
             onChange={handleChange}
-            className="w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-2 focus:ring-[#0072ce] outline-none"
+            className="w-full border border-gray-300 rounded-full px-5 py-3 focus:ring-2 focus:ring-[#FF7F32] outline-none text-sm"
           />
 
           {error && (
-            <p className="text-sm text-red-500 bg-red-100 px-3 py-2 rounded-md">
+            <p className="text-sm text-red-600 bg-red-100 px-4 py-2 rounded-md text-center">
               {error}
             </p>
           )}
 
           <button
             type="submit"
-            className="w-full bg-[#0072ce] hover:bg-[#0056b3] text-white font-semibold py-2 px-4 rounded-md transition duration-200"
+            className="w-full bg-[#FF7F32] hover:bg-[#FF5F20] text-white font-medium py-3 rounded-full transition duration-300 text-sm"
           >
-            Login
+            Sign In
           </button>
         </form>
 
         <p className="text-center text-sm text-gray-600 mt-6">
-          New to the platform?{" "}
-          <a href="/register" className="text-[#0072ce] hover:underline">
+          New here?{" "}
+          <a href="/register" className="text-[#FF7F32] hover:underline font-medium">
             Create an account
           </a>
         </p>
