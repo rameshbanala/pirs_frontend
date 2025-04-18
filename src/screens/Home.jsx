@@ -1,8 +1,23 @@
-import React from "react";
-import { Link } from "react-router-dom";
-
+import React ,{useEffect} from "react";
+import { Link, useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 const Home = () => {
+    const navigate = useNavigate();
+  
+    const handleClick = () => {
+      const cookies = document.cookie.split(';');
+      const jwtCookie = cookies.find(cookie => cookie.trim().startsWith('jwt='));
+  
+      console.log(jwtCookie);
+      if (jwtCookie) {
+        navigate('/complaint');
+      } else {
+        navigate('/login');
+      }
+    };
+  
   return (
+
     <div className="font-sans bg-white text-[#2C2C2C] min-h-screen">
       
 
@@ -26,12 +41,12 @@ const Home = () => {
         >
           Become a Solver
         </Link>
-        <Link
-          to="/login"
-          className="border border-[#FF7F32] text-[#FF7F32] hover:text-white hover:bg-[#FF7F32] px-8 py-3 rounded-full text-lg font-medium transition duration-300"
-        >
-          Already Registered?
-        </Link>
+        <button
+      onClick={handleClick}
+      className="border border-[#FF7F32] text-[#FF7F32] hover:text-white hover:bg-[#FF7F32] px-8 py-3 rounded-full text-lg font-medium transition duration-300"
+    >
+      Already Registered?
+    </button>
       </div>
     </div>
 

@@ -5,6 +5,9 @@ import Register from '../screens/Register'
 import Home from '../screens/Home'
 import Header from '../screens/Header'
 import Footer from '../screens/Footer'
+import Complaint from '../screens/Complaint'
+import Complaints from '../screens/Complaints'
+
 
 const AppRoutes = () => {
     return (
@@ -14,6 +17,10 @@ const AppRoutes = () => {
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/complaint" element={<Complaint />} />
+                <Route path="/all-complaints" element={<Complaints />} />
+
             </Routes>
             <Footer />
         </BrowserRouter>

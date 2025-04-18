@@ -12,6 +12,18 @@ const Header = () => {
               IssueSolver
             </div>
             <nav className="flex space-x-4">
+            <Link
+                to="/all-complaints"
+                className="text-md font-medium text-[#2C2C2C] hover:text-[#FF7F32] transition duration-200 mt-2 mr-2"
+              >
+                Complaints
+              </Link>
+              <Link
+                to="/complaint"
+                className="text-md font-medium text-[#2C2C2C] hover:text-[#FF7F32] transition duration-200 mt-2 mr-2"
+              >
+                Raise Complaint
+              </Link>
               <Link
                 to="/login"
                 className="text-md font-medium text-[#2C2C2C] hover:text-[#FF7F32] transition duration-200 mt-2 mr-2"
@@ -23,6 +35,12 @@ const Header = () => {
                 className="bg-[#FF7F32] hover:bg-[#FF5F20] text-white text-sm font-medium px-4 py-2 rounded-full transition duration-200 shadow-sm"
               >
                 Register
+              </Link>
+              <Link
+                to="/"
+                className="bg-[#FF7F32] hover:bg-[#FF5F20] text-white text-sm font-medium px-4 py-2 rounded-full transition duration-200 shadow-sm"
+              >
+                Home
               </Link>
             </nav>
           </div>
