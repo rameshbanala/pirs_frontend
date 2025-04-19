@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-
 const Login = () => {
   const navigate = useNavigate();
 
@@ -23,27 +22,32 @@ const Login = () => {
     setError("");
 
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/login", formData, {
-        withCredentials: true,
-      });
+      const res = await axios.post(
+        "http://localhost:5000/api/auth/login",
+        formData,
+        {
+          withCredentials: true,
+        }
+      );
 
       if (res.status === 200) {
-        alert(`Welcome back, ${res.data.fullName}!`);
-        console.log("User Data:", res.data);
-        console.log(res);
         // Redirect or store user info
+        localStorage.setItem("username", res.data.username);
         if (res.data.department) {
-          console.log(res.data.department);
-          localStorage.setItem("username",res.data.username);
-          localStorage.setItem("department", res.data.department); // ✅ fixed
+          // console.log(res.data.department);
+          // console.log(res.data.username);
+          localStorage.setItem("department", res.data.department);
+          alert(`Welcome back, ${res.data.fullName}!`);
+          // console.log("User Data:", res.data);
+          // console.log(res); // ✅ fixed
           navigate(`/dashboard/${res.data.department}`);
         } else {
           navigate("/");
         }
-        
       }
     } catch (err) {
-      const message = err.response?.data?.error || "Login failed. Please try again.";
+      const message =
+        err.response?.data?.error || "Login failed. Please try again.";
       setError(message);
     }
   };
@@ -95,7 +99,10 @@ const Login = () => {
 
         <p className="text-center text-sm text-gray-600 mt-6">
           New here?{" "}
-          <a href="/register" className="text-[#FF7F32] hover:underline font-medium">
+          <a
+            href="/register"
+            className="text-[#FF7F32] hover:underline font-medium"
+          >
             Create an account
           </a>
         </p>

@@ -59,10 +59,17 @@ import { Link, useNavigate } from "react-router-dom";
 const Header = () => {
   const username = localStorage.getItem("username");
   const navigate = useNavigate();
+  const department = localStorage.getItem("department")
+    ? localStorage.getItem("department")
+    : null;
 
   const handleLogout = async () => {
     try {
-      await axios.post("http://localhost:5000/api/auth/logout");
+      await axios.post(
+        "http://localhost:5000/api/auth/logout",
+        {},
+        { withCredentials: true }
+      );
       localStorage.removeItem("username");
       navigate("/login");
     } catch (error) {
@@ -77,7 +84,7 @@ const Header = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="text-2xl font-extrabold text-[#FF7F32] tracking-tight">
-              IssueSolver
+              <Link to="/">Issue Solver</Link>
             </div>
             <nav className="flex space-x-4 items-center">
               <Link
@@ -99,19 +106,26 @@ const Header = () => {
                     to="/profile"
                     className="text-md font-medium text-[#2C2C2C] hover:text-[#FF7F32] transition duration-200"
                   >
-                   <img
-                    src="https://www.w3schools.com/howto/img_avatar.png"
-                    alt="User"
-                    className="w-8 h-8 rounded-full ml-2"
-                  />
+                    <img
+                      src="https://www.w3schools.com/howto/img_avatar.png"
+                      alt="User"
+                      className="w-8 h-8 rounded-full ml-2"
+                    />
                   </Link>
+                  {department && (
+                    <Link
+                      to={`/dashboard/${department}`}
+                      className="text-md font-medium text-[#2C2C2C] hover:text-[#FF7F32] transition duration-200"
+                    >
+                      Dashboard
+                    </Link>
+                  )}
                   <button
                     onClick={handleLogout}
                     className="text-md font-medium text-[#2C2C2C] hover:text-red-500 transition duration-200"
                   >
                     Logout
                   </button>
-                 
                 </>
               ) : (
                 <>
@@ -129,13 +143,6 @@ const Header = () => {
                   </Link>
                 </>
               )}
-
-              <Link
-                to="/"
-                className="bg-[#FF7F32] hover:bg-[#FF5F20] text-white text-sm font-medium px-4 py-2 rounded-full transition duration-200 shadow-sm"
-              >
-                Home
-              </Link>
             </nav>
           </div>
         </div>

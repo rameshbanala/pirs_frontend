@@ -102,7 +102,7 @@
 // export default DepartmentDashboard;
 
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import {  useParams } from "react-router-dom";
 import DepartmentPosts from "./DepartmentPosts";
 import axios from "axios";
 import { Bar, Pie, Doughnut } from "react-chartjs-2";
@@ -112,7 +112,7 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Toolti
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend);
 
 const DepartmentDashboard = () => {
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
   const { department } = useParams(); // Dynamic department routing
   const [adminName, setAdminName] = useState("Department Admin");
   const [stats, setStats] = useState({ totalComplaints: 0, resolved: 0, pending: 0 });
@@ -225,12 +225,7 @@ const DepartmentDashboard = () => {
         <h1 className="text-4xl font-extrabold text-[#FF7F32]">
           {adminName} Dashboard
         </h1>
-        <button
-          onClick={() => navigate("/")}
-          className="bg-[#FF7F32] hover:bg-[#FF5F20] text-white px-6 py-2 rounded-full font-medium"
-        >
-          Go to Home
-        </button>
+        
       </div>
 
       {/* Stats Cards */}
