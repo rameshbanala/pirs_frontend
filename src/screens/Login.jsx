@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
 
 const Login = () => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -26,7 +30,17 @@ const Login = () => {
       if (res.status === 200) {
         alert(`Welcome back, ${res.data.fullName}!`);
         console.log("User Data:", res.data);
+        console.log(res);
         // Redirect or store user info
+        if (res.data.department) {
+          console.log(res.data.department);
+          localStorage.setItem("username",res.data.username);
+          localStorage.setItem("department", res.data.department); // ✅ fixed
+          navigate(`/dashboard/${res.data.department}`);
+        } else {
+          navigate("/");
+        }
+        
       }
     } catch (err) {
       const message = err.response?.data?.error || "Login failed. Please try again.";
