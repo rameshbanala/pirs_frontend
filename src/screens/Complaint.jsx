@@ -1,6 +1,18 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
+// Mapping of subcategory to main category
+const SUBCATEGORY_TO_MAIN = {
+  "Broken Hydrants": "Water",
+  "Contaminated Water": "Water",
+  "Dirty Toilets": "Sanitation",
+  "Open Manholes": "Sanitation",
+  Potholes: "Roads",
+  "Public Taps": "Water",
+  Streetlights: "Electricity",
+  Traffic: "Traffic",
+};
+
 const Complaint = () => {
   const [formData, setFormData] = useState({
     mainCategory: "",
@@ -16,6 +28,8 @@ const Complaint = () => {
   });
 
   const [error, setError] = useState("");
+  const [predictLoading, setPredictLoading] = useState(false);
+  const [predictError, setPredictError] = useState("");
 
   useEffect(() => {
     if ("geolocation" in navigator) {
@@ -41,8 +55,44 @@ const Complaint = () => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleImageChange = (e) => {
-    setFormData((prev) => ({ ...prev, imageFile: e.target.files[0] }));
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+    setFormData((prev) => ({ ...prev, imageFile: file }));
+    setPredictError("");
+    setPredictLoading(true);
+
+    if (!file) return;
+
+    try {
+      const formDataData = new FormData();
+      formDataData.append("image", file);
+
+      const response = await fetch("http://localhost:5000/predict", {
+        method: "POST",
+        body: formDataData,
+      });
+
+      if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.error || "Prediction failed");
+      }
+
+      const result = await response.json();
+
+      // result.label is the subcategory
+      const subCategory = result.label;
+      const mainCategory = SUBCATEGORY_TO_MAIN[subCategory] || "";
+
+      setFormData((prev) => ({
+        ...prev,
+        mainCategory,
+        subCategory,
+      }));
+    } catch (error) {
+      setPredictError(error.message);
+    } finally {
+      setPredictLoading(false);
+    }
   };
 
   const convertToBase64 = (file) =>
@@ -75,14 +125,17 @@ const Complaint = () => {
         description: formData.description,
       };
 
-      const res = await axios.post("http://localhost:5000/api/posts/create", postData, {
-        withCredentials: true,
-      });
+      const res = await axios.post(
+        "http://localhost:5000/api/posts/create",
+        postData,
+        {
+          withCredentials: true,
+        }
+      );
 
       alert("Post created successfully!");
       console.log("Server response:", res.data);
 
-      // Optionally reset form
       setFormData({
         mainCategory: "",
         subCategory: "",
@@ -114,6 +167,7 @@ const Complaint = () => {
             onChange={handleChange}
             required
             className="w-full border border-gray-300 rounded-full px-5 py-3 focus:ring-2 focus:ring-[#FF7F32] outline-none text-sm"
+            readOnly // Make it readonly so user can't edit if you want
           />
 
           <input
@@ -124,6 +178,7 @@ const Complaint = () => {
             onChange={handleChange}
             required
             className="w-full border border-gray-300 rounded-full px-5 py-3 focus:ring-2 focus:ring-[#FF7F32] outline-none text-sm"
+            readOnly // Make it readonly so user can't edit if you want
           />
 
           <textarea
@@ -143,6 +198,17 @@ const Complaint = () => {
             required
             className="w-full border border-gray-300 rounded-full px-5 py-2 focus:ring-2 focus:ring-[#FF7F32] outline-none text-sm"
           />
+
+          {predictLoading && (
+            <p className="text-sm text-blue-600 bg-blue-100 px-4 py-2 rounded-md text-center">
+              Predicting category from image...
+            </p>
+          )}
+          {predictError && (
+            <p className="text-sm text-red-600 bg-red-100 px-4 py-2 rounded-md text-center">
+              {predictError}
+            </p>
+          )}
 
           <div className="text-sm text-gray-600 text-center">
             <strong>Location:</strong>{" "}
