@@ -7,12 +7,18 @@ import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
 const SUBCATEGORY_TO_MAIN = {
   "Broken Hydrants": "Water",
   "Contaminated Water": "Water",
+  "Damaged Benches": "Infrastructure",
+  "Damaged Roads": "Infrastructure",
+  "Damaged Transformer": "Electricity",
+  "Dead Animals": "Sanitation",
   "Dirty Toilets": "Sanitation",
+  "Fire Hazard": "Fire Safety",
+  Graffiti: "Public Property",
   "Open Manholes": "Sanitation",
-  Potholes: "Roads",
+  Potholes: "Infrastructure",
   "Public Taps": "Water",
   Streetlights: "Electricity",
-  Traffic: "Traffic",
+  Traffic: "Traffic Management",
 };
 
 const MAP_ID = "9b318e0a8ebafb31";
