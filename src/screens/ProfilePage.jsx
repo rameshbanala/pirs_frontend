@@ -72,32 +72,35 @@ const ProfilePage = () => {
   if (loading) return <div className="text-center mt-10 text-orange-500">Loading...</div>;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-white py-10 px-4 sm:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-white py-10 px-4 sm:px-8 mt-8">
       <h1 className="text-3xl font-bold text-orange-600 text-center mb-10">My Profile</h1>
 
-      <div className="max-w-xl mx-auto bg-white rounded-xl shadow-md border-l-4 border-orange-500 p-6">
-        <div className="flex items-center gap-4 mb-4">
-          <img
-            src={user.profileImg || "/default-profile.png"}
-            alt="Profile"
-            className="w-24 h-24 rounded-full border border-orange-300 object-cover"
-          />
-          <div>
-            <h2 className="text-xl font-semibold text-orange-700">{user.fullName}</h2>
-            <p className="text-gray-600">{user.email}</p>
-            <p className="text-sm text-gray-400">@{user.username}</p>
-          </div>
-        </div>
+      <div className="max-w-xl mx-auto bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-orange-300 p-6">
+  <div className="flex items-center gap-5 mb-6">
+    <div className="relative">
+      <img
+        src={user.profileImg || "/default-profile.png"}
+        alt="Profile"
+        className="w-24 h-24 rounded-full border-4 border-orange-400 object-cover shadow-md"
+      />
+      {/* Small online indicator */}
+      <span className="absolute bottom-2 right-2 w-4 h-4 bg-green-400 border-2 border-white rounded-full"></span>
+    </div>
+    <div>
+      <h2 className="text-2xl font-bold text-orange-600">{user.fullName}</h2>
+      <p className="text-gray-600">{user.email}</p>
+      <p className="text-sm text-gray-400">@{user.username}</p>
+    </div>
+  </div>
 
-        <p className="text-sm text-gray-700">Link: {user.link || "-"}</p>
+  <button
+    className="w-full bg-orange-500 hover:bg-orange-600 active:scale-95 transition transform duration-200 text-white font-semibold py-2 rounded-full shadow-md"
+    onClick={() => setIsOpen(true)}
+  >
+    Edit Profile
+  </button>
+</div>
 
-        <button
-          className="mt-6 w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded-full"
-          onClick={() => setIsOpen(true)}
-        >
-          Edit Profile
-        </button>
-      </div>
 
       {/* User Posts Section */}
       <div className="mt-10">

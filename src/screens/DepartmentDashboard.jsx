@@ -219,97 +219,109 @@ const DepartmentDashboard = () => {
   };
 
   return (
-    <div className="font-sans bg-white text-[#2C2C2C] min-h-screen px-6 md:px-20 py-10 mt-10">
-      {/* Header */}
-      <div className="flex justify-between items-center mb-10">
-        <h1 className="text-4xl font-extrabold text-[#FF7F32]">
-          {adminName} Dashboard
-        </h1>
-        
+    <div className="font-sans bg-gradient-to-br from-white to-[#f0f4f8] text-[#2C2C2C] min-h-screen px-6 md:px-20 py-10 mt-10">
+    {/* Header */}
+    <div className="flex justify-between items-center mb-12">
+      <h1 className="text-4xl md:text-5xl font-extrabold text-[#FF7F32] drop-shadow-sm">
+        {adminName} Dashboard
+      </h1>
+    </div>
+  
+    {/* Stats Cards */}
+    <div className="grid md:grid-cols-3 gap-8 mb-16">
+      {[
+        { label: "Total Complaints", value: stats.totalComplaints, color: "#43A8FF" },
+        { label: "Resolved", value: stats.resolved, color: "#16A34A" },
+        { label: "Pending", value: stats.pending, color: "#DC2626" },
+      ].map((item, index) => (
+        <div
+          key={index}
+          className="bg-white rounded-2xl p-6 shadow-md hover:shadow-xl hover:-translate-y-1 transform transition-all duration-300"
+        >
+          <h3 className="text-lg font-semibold text-gray-700 mb-2">{item.label}</h3>
+          <p className="text-4xl font-bold" style={{ color: item.color }}>
+            {item.value}
+          </p>
+        </div>
+      ))}
+    </div>
+  
+    {/* Department Complaints */}
+    <div className="mb-16">
+      <h2 className="text-3xl font-semibold text-[#2C2C2C] mb-6">
+        Recent Complaints
+      </h2>
+      <DepartmentPosts department={department} />
+    </div>
+  
+    {/* Quick Actions */}
+    <div className="mt-16">
+      <h2 className="text-3xl font-semibold text-[#2C2C2C] mb-6">
+        Quick Actions
+      </h2>
+      <div className="flex flex-wrap gap-6">
+        <button className="bg-[#43A8FF] hover:bg-[#318CE7] text-white px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition transform hover:scale-105 text-lg font-semibold">
+          Assign Staff
+        </button>
+        <button className="bg-[#FF7F32] hover:bg-[#FF5F20] text-white px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition transform hover:scale-105 text-lg font-semibold">
+          Mark All as Read
+        </button>
+        <button 
+          onClick={handleGenerateReport}
+          className="bg-gray-200 hover:bg-gray-300 text-[#2C2C2C] px-8 py-4 rounded-full shadow hover:shadow-md transition transform hover:scale-105 text-lg font-semibold"
+        >
+          Generate Report
+        </button>
       </div>
-
-      {/* Stats Cards */}
-      <div className="grid md:grid-cols-3 gap-6 mb-12">
-        {[
-          { label: "Total Complaints", value: stats.totalComplaints, color: "#43A8FF" },
-          { label: "Resolved", value: stats.resolved, color: "#16A34A" },
-          { label: "Pending", value: stats.pending, color: "#DC2626" },
-        ].map((item, index) => (
-          <div
-            key={index}
-            className="bg-[#F9FAFB] rounded-xl p-6 shadow hover:shadow-lg transition-all"
-          >
-            <h3 className="text-lg font-semibold text-gray-700">{item.label}</h3>
-            <p className="text-3xl font-bold" style={{ color: item.color }}>
-              {item.value}
+    </div>
+  
+    {/* Display Report when the button is clicked */}
+    {showReport && (
+      <div className="mt-16">
+        <h2 className="text-3xl font-semibold text-[#2C2C2C] mb-8">
+          Department Report
+        </h2>
+        <div className="bg-white rounded-2xl p-8 shadow-md transition-all">
+          <div className="grid md:grid-cols-3 gap-6 mb-10">
+            <p className="text-2xl font-bold text-gray-700">
+              Total Complaints: <span className="text-[#43A8FF]">{stats.totalComplaints}</span>
+            </p>
+            <p className="text-2xl font-bold text-[#16A34A]">
+              Resolved: {stats.resolved}
+            </p>
+            <p className="text-2xl font-bold text-[#DC2626]">
+              Pending: {stats.pending}
             </p>
           </div>
-        ))}
-      </div>
-
-      {/* Department Complaints */}
-      <div className="mb-12">
-        <h2 className="text-2xl font-semibold text-[#2C2C2C] mb-4">
-          Recent Complaints
-        </h2>
-        <DepartmentPosts department={department} />
-      </div>
-
-      {/* Quick Actions */}
-      <div className="mt-12">
-        <h2 className="text-2xl font-semibold text-[#2C2C2C] mb-4">
-          Quick Actions
-        </h2>
-        <div className="flex flex-wrap gap-4">
-          <button className="bg-[#43A8FF] hover:bg-[#318CE7] text-white px-6 py-3 rounded-xl shadow transition">
-            Assign Staff
-          </button>
-          <button className="bg-[#FF7F32] hover:bg-[#FF5F20] text-white px-6 py-3 rounded-xl shadow transition">
-            Mark All as Read
-          </button>
-          <button 
-            onClick={handleGenerateReport} 
-            className="bg-gray-200 hover:bg-gray-300 text-[#2C2C2C] px-6 py-3 rounded-xl transition"
-          >
-            Generate Report
-          </button>
-        </div>
-      </div>
-
-      {/* Display Report when the button is clicked */}
-      {showReport && (
-        <div className="mt-10">
-          <h2 className="text-2xl font-semibold text-[#2C2C2C] mb-4">
-            Department Report
-          </h2>
-          <div className="bg-[#F9FAFB] rounded-xl p-6 shadow transition-all">
-            <p className="text-xl font-semibold text-gray-700">Total Complaints: {stats.totalComplaints}</p>
-            <p className="text-xl font-semibold text-[#16A34A]">Resolved: {stats.resolved}</p>
-            <p className="text-xl font-semibold text-[#DC2626]">Pending: {stats.pending}</p>
-          </div>
-          <div className="mt-10 flex justify-between space-x-4">
-            {/* Bar Chart and Pie Chart side by side */}
-            <div style={{ width: "48%", height: "300px" }}>
+  
+          {/* Charts */}
+          <div className="mt-10 flex flex-wrap justify-between gap-8">
+            <div className="w-full md:w-[48%]">
               <h3 className="text-xl font-semibold mb-4">Complaint Stats (Bar Chart)</h3>
-              <Bar data={chartDataBar} options={chartOptions} />
+              <div className="bg-[#F9FAFB] rounded-xl p-4 shadow-sm">
+                <Bar data={chartDataBar} options={chartOptions} />
+              </div>
             </div>
-
-            <div style={{ width: "48%", height: "300px" }}>
+  
+            <div className="w-full md:w-[48%]">
               <h3 className="text-xl font-semibold mb-4">Complaint Distribution (Pie Chart)</h3>
-              <Pie data={chartDataPie} />
+              <div className="bg-[#F9FAFB] rounded-xl p-4 shadow-sm">
+                <Pie data={chartDataPie} />
+              </div>
             </div>
           </div>
-
-          <div className="mt-10">
-            {/* Doughnut Chart below the two charts */}
+  
+          <div className="mt-12">
             <h3 className="text-xl font-semibold mb-4">Complaint Distribution (Doughnut Chart)</h3>
-            <div style={{ width: "70%", height: "300px" }}>
+            <div className="bg-[#F9FAFB] rounded-xl p-6 shadow-sm w-full md:w-[70%] mx-auto">
               <Doughnut data={chartDataDoughnut} />
             </div>
           </div>
         </div>
-      )}
-    </div>
+      </div>
+    )}
+  </div>
+  
   );
 };
 
