@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Toaster, toast } from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -33,17 +33,18 @@ const Login = () => {
 
       if (res.status === 200) {
         localStorage.setItem("username", res.data.username);
+
         if (res.data.department) {
           localStorage.setItem("department", res.data.department);
           toast.success(`Welcome back, ${res.data.fullName}!`);
           setTimeout(() => {
             navigate(`/dashboard/${res.data.department}`);
-          }, 3000); // Delay navigation to allow toast display
+          }, 3000);
         } else {
           toast.success("Welcome back!");
           setTimeout(() => {
             navigate("/");
-          }, 3000); // Delay navigation to allow toast display
+          }, 3000);
         }
       }
     } catch (err) {
@@ -54,10 +55,15 @@ const Login = () => {
     }
   };
 
+  // ✅ Check login via localStorage (since cookie is httpOnly and inaccessible)
+  const isLoggedIn = localStorage.getItem("username");
+  if (isLoggedIn) {
+    return <Navigate to="/" replace />;
+  }
+
   return (
     <>
       <Toaster position="top-center" />
-
       <div className="min-h-screen flex items-center justify-center px-4 py-8 bg-gradient-to-tr from-orange-100 to-orange-200 animate-fade-in">
         <div className="max-w-md w-full bg-white rounded-3xl shadow-2xl p-10 border-t-8 border-[#FF7F32] animate-fade-in">
           <h2 className="text-4xl font-extrabold text-[#2C2C2C] text-center mb-2">
@@ -68,7 +74,6 @@ const Login = () => {
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Email Input with Icon */}
             <div className="relative">
               <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg">
                 ✉️
@@ -84,7 +89,6 @@ const Login = () => {
               />
             </div>
 
-            {/* Password Input with Icon */}
             <div className="relative">
               <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg">
                 🔒

@@ -1,5 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { Route, BrowserRouter, Routes, Navigate, useLocation } from "react-router-dom";
+// src/components/AppRoutesWithRouter.js
+import React from "react";
+import {
+  Route,
+  BrowserRouter,
+  Routes,
+  Navigate,
+  useLocation,
+} from "react-router-dom";
+
 import Login from "../screens/Login";
 import Register from "../screens/Register";
 import Home from "../screens/Home";
@@ -9,62 +17,64 @@ import Complaint from "../screens/Complaint";
 import Complaints from "../screens/Complaints";
 import ProfilePage from "../screens/ProfilePage";
 import DepartmentDashboard from "../screens/DepartmentDashboard";
-import axios from "axios";
+import ProtectedRoute from "./ProtectedRoute";
 
 const AppRoutes = () => {
-    const [user, setUser] = useState(null);  // Store JWT
-    const [loading, setLoading] = useState(true); // Prevent premature rendering
-   
+  const location = useLocation();
 
-    const fetchToken = async () => {
-        try {
-            const response = await axios.get("http://localhost:5000/api/auth/token", {
-                withCredentials: true,
-            });
+  return (
+    <>
+      <Header />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
-            console.log("JWT Token:", response.data.token); // Debugging
-            if (response.data.token) {
-                setUser(response.data.token); // Store token
-            }
-        } catch (error) {
-            console.error("Error fetching token:", error);
-        } finally {
-            setLoading(false); // Stop loading
-        }
-    };
+        <Route
+          path="/complaint"
+          element={
+            <ProtectedRoute>
+              <Complaint />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/all-complaints"
+          element={
+            <ProtectedRoute>
+              <Complaints />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard/:department"
+          element={
+            <ProtectedRoute>
+              <DepartmentDashboard />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
 
-    // Fetch token only once when component mounts
-    useEffect(() => {
-        fetchToken();
-    }, []);
-
-    // Prevent navigation while loading
-    if (loading) {
-        return <div>Loading...</div>; // You can replace this with a loading spinner
-    }
-
-    return (
-        <BrowserRouter>
-            {/* Conditional Header/Footer rendering */}
-            {/* {window.location.pathname !== "/login" && window.location.pathname !== "/register" && } */}
-            <Header />
-            {/* Routes definition */}
-            <Routes>
-                <Route path="/" element={ <Home /> } />
-                <Route path="/login" element={!user?<Login />: <Navigate to="/" />} />
-                <Route path="/register" element={!user?<Register />: <Navigate to="/" />} />
-                <Route path="/complaint" element={<Complaint />} />
-                <Route path="/all-complaints" element={<Complaints />} />
-                <Route path="/profile" element={<ProfilePage />} />
-                
-                {/* Dynamic Department Dashboard */}
-                <Route path="/dashboard/:department" element={<DepartmentDashboard />} />
-            </Routes>
-
-            {/* Conditional Footer rendering */}
-            {location.pathname !== "/login" && location.pathname !== "/register" && <Footer />}
-        </BrowserRouter>
-    );
+      {location.pathname !== "/login" && location.pathname !== "/register" && (
+        <Footer />
+      )}
+    </>
+  );
 };
 
-export default AppRoutes;
+const AppRoutesWithRouter = () => (
+  <BrowserRouter>
+    <AppRoutes />
+  </BrowserRouter>
+);
+
+export default AppRoutesWithRouter;

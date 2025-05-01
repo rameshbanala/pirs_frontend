@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { Navigate } from "react-router-dom"; // Importing Navigate for redirection
 import { Toaster, toast } from "react-hot-toast";
 import { FaUser, FaEnvelope, FaLock, FaRegUserCircle } from "react-icons/fa"; // Importing icons from react-icons
 
@@ -23,9 +24,14 @@ const Register = () => {
     setIsSubmitting(true);
 
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/signup", formData);
+      const res = await axios.post(
+        "http://localhost:5000/api/auth/signup",
+        formData
+      );
       if (res.status === 200 || res.status === 201) {
-        toast.success("Thank you for joining! You can now report and track issues in your community.");
+        toast.success(
+          "Thank you for joining! You can now report and track issues in your community."
+        );
         setFormData({
           fullName: "",
           username: "",
@@ -34,11 +40,17 @@ const Register = () => {
         });
       }
     } catch (err) {
-      toast.error(err.response?.data?.message || "Something went wrong. Please try again.");
+      toast.error(
+        err.response?.data?.message || "Something went wrong. Please try again."
+      );
     } finally {
       setIsSubmitting(false);
     }
   };
+  const isLoggedIn = localStorage.getItem("username");
+  if (isLoggedIn) {
+    return <Navigate to="/" replace />;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-tr from-orange-100 to-orange-200 animate-fade-in flex items-center justify-center px-4 py-8 mt-10">
@@ -49,7 +61,8 @@ const Register = () => {
           Create Your Account
         </h2>
         <p className="text-center text-gray-600 mb-6 text-sm">
-          Join the community and help improve your city by reporting local issues.
+          Join the community and help improve your city by reporting local
+          issues.
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -108,7 +121,11 @@ const Register = () => {
 
           <button
             type="submit"
-            className={`w-full ${isSubmitting ? "bg-gray-300 cursor-not-allowed" : "bg-[#FF7F32] hover:bg-[#FF5F20]"} text-white font-medium py-3 rounded-full transition duration-300 text-sm`}
+            className={`w-full ${
+              isSubmitting
+                ? "bg-gray-300 cursor-not-allowed"
+                : "bg-[#FF7F32] hover:bg-[#FF5F20]"
+            } text-white font-medium py-3 rounded-full transition duration-300 text-sm`}
             disabled={isSubmitting}
           >
             {isSubmitting ? "Registering..." : "Register"}
@@ -117,7 +134,10 @@ const Register = () => {
 
         <p className="text-center text-sm text-gray-600 mt-6">
           Already have an account?{" "}
-          <a href="/login" className="text-[#FF7F32] hover:underline font-medium">
+          <a
+            href="/login"
+            className="text-[#FF7F32] hover:underline font-medium"
+          >
             Log in here
           </a>
         </p>
