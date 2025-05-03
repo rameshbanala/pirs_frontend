@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Toaster, toast } from "react-hot-toast";
 import { useNavigate, Navigate } from "react-router-dom";
+import { GoogleLogin } from "@react-oauth/google";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -117,6 +118,43 @@ const Login = () => {
               Sign In
             </button>
           </form>
+          <div className="flex flex-col items-center mt-6 space-y-4">
+            <p className="text-sm text-gray-500">Or sign in with</p>
+
+            <GoogleLogin
+              onSuccess={async (credentialResponse) => {
+                try {
+                  const res = await axios.post(
+                    "http://localhost:5000/api/auth/google",
+                    {
+                      token: credentialResponse.credential,
+                    },
+                    { withCredentials: true }
+                  );
+
+                  localStorage.setItem("username", res.data.username);
+
+                  if (res.data.department) {
+                    localStorage.setItem("department", res.data.department);
+                    toast.success(`Welcome back, ${res.data.fullName}!`);
+                    setTimeout(() => {
+                      navigate(`/dashboard/${res.data.department}`);
+                    }, 3000);
+                  } else {
+                    toast.success("Welcome back!");
+                    setTimeout(() => {
+                      navigate("/");
+                    }, 3000);
+                  }
+                } catch (err) {
+                  toast.error("Google sign-in failed." + err);
+                }
+              }}
+              onError={() => {
+                toast.error("Google sign-in error.");
+              }}
+            />
+          </div>
 
           <p className="text-center text-sm text-gray-600 mt-6">
             New here?{" "}
