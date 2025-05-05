@@ -50,24 +50,75 @@ const Complaint = () => {
     libraries: ["places"],
   });
 
-  // Get live location
+  // Accurate location with fallback and address
   useEffect(() => {
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const lat = position.coords.latitude;
-          const lng = position.coords.longitude;
-          setLocation((prev) => ({
-            ...prev,
-            coordinates: [lng, lat],
-            address: `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`,
-          }));
-        },
-        () => {
-          setError("Failed to fetch location.");
+    const geocodeLatLng = async (lat, lng) => {
+      try {
+        const res = await fetch(
+          `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${GOOGLE_MAPS_API_KEY}`
+        );
+        const data = await res.json();
+        if (data.status === "OK" && data.results && data.results.length > 0) {
+          return data.results[0].formatted_address;
         }
-      );
-    }
+        return `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`;
+      } catch {
+        return `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`;
+      }
+    };
+
+    const fetchAccurateLocation = async () => {
+      if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          async (pos) => {
+            const { latitude: lat, longitude: lng } = pos.coords;
+            const address = await geocodeLatLng(lat, lng);
+            setLocation({
+              type: "Point",
+              coordinates: [lng, lat],
+              address,
+            });
+          },
+          async () => {
+            // Fallback to Google Geolocation API
+            try {
+              const response = await fetch(
+                `https://www.googleapis.com/geolocation/v1/geolocate?key=${GOOGLE_MAPS_API_KEY}`,
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                }
+              );
+              const data = await response.json();
+              if (data && data.location) {
+                const { lat, lng } = data.location;
+                const address = await geocodeLatLng(lat, lng);
+                setLocation({
+                  type: "Point",
+                  coordinates: [lng, lat],
+                  address,
+                });
+              } else {
+                setError("Unable to fetch accurate location from Google API.");
+              }
+            } catch {
+              setError("Unable to fetch location from Google API.");
+            }
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0,
+          }
+        );
+      } else {
+        setError("Geolocation is not supported by your browser.");
+      }
+    };
+
+    fetchAccurateLocation();
   }, []);
 
   // Handle image selection and prediction
@@ -136,10 +187,12 @@ const Complaint = () => {
 
     if (!formData.imageFile) {
       setError("Please select an image.");
+      setPostLoading(false);
       return;
     }
     if (!formData.mainCategory || !formData.subCategory) {
       setError("Please wait for image analysis to complete.");
+      setPostLoading(false);
       return;
     }
 
@@ -172,10 +225,10 @@ const Complaint = () => {
       navigate("/all-complaints");
     } catch {
       setError("Failed to create post. Please try again.");
+      setPostLoading(false);
     }
   };
 
-  // UI
   return (
     <div className="min-h-screen bg-[#f4f4f4] flex items-center justify-center px-4 py-8 mt-10">
       <div className="max-w-lg w-full bg-white rounded-2xl shadow-lg p-8 border-t-[6px] border-[#FF7F32]">
@@ -257,22 +310,21 @@ const Complaint = () => {
           {imagePreview && (
             <div className="w-full h-48 rounded-lg overflow-hidden border border-gray-200 mb-2">
               {isLoaded && location.coordinates.length === 2 ? (
-                <GoogleMap
-                  mapContainerStyle={{ width: "100%", height: "100%" }}
-                  center={{
-                    lat: Number(location.coordinates[1]),
-                    lng: Number(location.coordinates[0]),
-                  }}
-                  zoom={16}
-                  options={{ mapId: MAP_ID, disableDefaultUI: true }}
-                >
-                  <Marker
-                    position={{
-                      lat: Number(location.coordinates[1]),
-                      lng: Number(location.coordinates[0]),
-                    }}
-                  />
-                </GoogleMap>
+                (() => {
+                  const [lng, lat] = location.coordinates;
+                  const center = { lat: Number(lat), lng: Number(lng) };
+
+                  return (
+                    <GoogleMap
+                      mapContainerStyle={{ width: "100%", height: "100%" }}
+                      center={center}
+                      zoom={16}
+                      options={{ mapId: MAP_ID, disableDefaultUI: true }}
+                    >
+                      <Marker position={center} />
+                    </GoogleMap>
+                  );
+                })()
               ) : (
                 <div className="flex items-center justify-center h-full text-gray-400">
                   Loading map...
