@@ -260,15 +260,9 @@ const DepartmentDashboard = () => {
         Quick Actions
       </h2>
       <div className="flex flex-wrap gap-6">
-        <button className="bg-[#43A8FF] hover:bg-[#318CE7] text-white px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition transform hover:scale-105 text-lg font-semibold">
-          Assign Staff
-        </button>
-        <button className="bg-[#FF7F32] hover:bg-[#FF5F20] text-white px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition transform hover:scale-105 text-lg font-semibold">
-          Mark All as Read
-        </button>
         <button 
           onClick={handleGenerateReport}
-          className="bg-gray-200 hover:bg-gray-300 text-[#2C2C2C] px-8 py-4 rounded-full shadow hover:shadow-md transition transform hover:scale-105 text-lg font-semibold"
+          className=" bg-[#FF7F32] hover:bg-[#FF5F20] text-[#2C2C2C] px-8 py-4 rounded-full shadow hover:shadow-md transition transform hover:scale-105 text-lg font-semibold"
         >
           Generate Report
         </button>
